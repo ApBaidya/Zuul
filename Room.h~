@@ -1,0 +1,30 @@
+//room header file: 11.26.2025
+#ifndef ROOM
+#define ROOM
+
+#include <cstring>
+#include <vector>
+
+using namespace std;
+
+class Room
+{
+ private:
+  char* description; //room description
+  char* exits;//n, e, s, w
+  vector<Room*> neighbors;//index in neighbors correlates to index in exits
+  int* items; //int array for items: 3(old shield) 2(magic spear) 10(torn cloth) 8(lake water) 11(sacred sword)
+ public:
+  Room();//create
+  ~Room();//death
+  void setD(char in_d[101]);
+  void setE(char in_e[4]);
+  void setR(Room obj);
+  void setI(int in_i[5]);
+  char* getD();
+  char getE();
+  vector<Room> getR();
+  int* getI();
+};
+
+#endif //ROOM

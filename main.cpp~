@@ -1,0 +1,17 @@
+/*
+Aparajita Baidya
+11/26/2025
+
+to do:
+Room Class
+Parser -->
+Verify command words -->
+return commands - 2 seperate words (ex: "go west" --> "go" (action) "west" (direction)) for process command func
+functions:
+- showInventory
+- help
+- drop
+- take
+- goRoom
+- quit
+*/
