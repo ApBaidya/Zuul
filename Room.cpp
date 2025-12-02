@@ -8,7 +8,7 @@ using namespace std;
 
 Room::Room()
 {
-  description = new char[101]; //new description
+  description = new char[300]; //new description
   //lets just...remember the room map 
   //lets remember items vector
 }
@@ -19,7 +19,7 @@ Room::~Room()
   //how to deal with map?
 }
 
-void Room::setD(char in_d[101])
+void Room::setD(char in_d[300])
 {
   strcpy(description, in_d);
 }

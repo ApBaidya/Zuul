@@ -17,7 +17,7 @@ class Room
  public:
   Room();//create
   ~Room();//death
-  void setD(char in_d[101]);
+  void setD(char in_d[300]);
   void setR(char exit, Room* o);
   void setI(int in_i);
   char* getD();
