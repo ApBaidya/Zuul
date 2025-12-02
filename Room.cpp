@@ -15,38 +15,47 @@ Room::Room()
 Room::~Room()
 {
   delete[] description;
-  delete[] item;
+  items.clear();
   //how to deal with map?
 }
 
-void setD(char in_d[101])
+void Room::setD(char in_d[101])
 {
   strcpy(description, in_d);
 }
-void setR(char exit, Room obj)
+void Room::setR(char exit, Room* o)
 {
-  neigh[exit] = obj;//add room to neigh with key exit
+  neigh[exit] = o;//add room pointer to neigh with key exit
 }
-void setI(int in_i)
+void Room::setI(int in_i)//for initial set and drop function
 {
   items.push_back(in_i);
 }
 
-char* getD()
+char* Room::getD()
 {
   return description;
 }
-map<char, Room*> getR()
+map<char, Room*> Room::getR()
 {
   return neigh;
 }
-vector<int> getI()
+vector<int> Room::getI()
 {
   return items;
 }
 
-void updateI(int in_i2)
+void Room::updateI(int in_i2)//for take function
 {
   int index;
-  for(vector<int>::iterator it = items.begin(); it )
+  int i = 0;
+  for(vector<int>::iterator it = items.begin(); it != items.begin(); ++it)
+  {
+    if ((*it) == in_i2)//if the int is the desired item num 
+    {
+      index = i; //set index to the index I want
+    }
+    ++i; //just continue to add to i
+  }
+  items.erase(items.begin()+index);
 }

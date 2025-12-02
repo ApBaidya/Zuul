@@ -18,7 +18,7 @@ class Room
   Room();//create
   ~Room();//death
   void setD(char in_d[101]);
-  void setR(char exit, Room obj);
+  void setR(char exit, Room* o);
   void setI(int in_i);
   char* getD();
   map<char, Room*> getR();
