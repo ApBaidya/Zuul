@@ -33,9 +33,9 @@ using namespace std;
 void mkRoom(vector<Room*>& r);//set up room vector
 void updateRooms(vector<Room>* r);//check certain room conditions
 void descRoom(int n, vector<Room*>& r);//spit out that room description
-void processE();//does exit exist
-void processD();//does item exist in player inv
-void processT();//does item exist in room inv
+void processE(char p, int& rn, vector<Room*>& r);//does exit exist --> move if so
+void processD(char p[15], int& rn, vector<item>& i, vector<Room*>& r);//does item exist in player inv --> drop if so
+void processT(char p[15], int& rn, vector<item>& i, vector<Room*>& r);//does item exist in room inv -- take if so
 void help();//cout possible inputs
 void drop();//remove item from player inv and add to room inv
 void take();//opposite of drop
@@ -49,7 +49,8 @@ int main()
   vector<item> playerInv;//player inventory
   int playing = 0; 
   int roomN = 2; //current room number
-  int playInput[15];//player input
+  char playerInput[15];//player input
+  char dir; //dir input
   //hello, room vector!
   vector<Room*> rooms;//room vector
   mkRoom(rooms);
@@ -60,37 +61,45 @@ int main()
   {
     cout << endl;
     cout<<"do you want to do anything?" << endl;
-    cin >> playInput;
+    cin >> playerInput;
     cin.ignore(10, '\n');
     cin.clear();
     cout << endl;
-    if(strcmp(playInput, "quit"))
+    if(strcmp(playerInput, "quit")==0)
     {
       quit();
       playing = 1;
     }
-    else if(strcmp(playerInput, "go"))
+    else if(strcmp(playerInput, "go")==0)
     {
       //ask dir
-      cout << "Go where?";
-      cin >> playerInput;
+      cout << "Go where?"<<endl;
+      cin >> dir;
       cin.ignore(10, '\n');
       cout.clear();
-      //confirm if possible
-      //either ask again
+      //confirm if possible + act
+      processE(dir, roomN, rooms);
     }
-    else if(strcmp(playerInput, "drop"))
+    else if(strcmp(playerInput, "drop")==0)
     {
       //ask what to drop
-      cout << "Drop what?";
-      //check if in inv
-      //move to room if poss
+      cout << "Drop what?"<<endl;
+      cin >> playerInput;
+      cin.ignore(10, '\n');
+      cin.clear();
+      //check if in inv + act
+      processD(playerInput, roomN, playerInv, rooms);
+      
     }
-    else if(strcmp(playerInput, "take"))
+    else if(strcmp(playerInput, "take")==0)
     {
       //ask what
-      //check room inv
-      //move to player inv if poss
+      cout << "Take what?"<<endl;
+      cin >> playerInput;
+      cin.ignore(10, '\n');
+      cin.clear();
+      //check room inv + act
+      processT(playerInput, roomN, playerInv, rooms);
     }
   }
   return 0;
@@ -140,7 +149,7 @@ void mkRoom(vector<Room*>& r)
   r.push_back(ro3);
 }
 
-void updateRooms(vector<Room*>& r))
+void updateRooms(vector<Room*>& r)
 {
   
 }
@@ -160,14 +169,32 @@ void descRoom(int n, vector<Room*>& r)
   }
 }
 //p is playerInput, rn is room number
-void processE(char p[15], int rn, vector<Room*>& r)
+void processE(char p, int& rn, vector<Room*>& r)
 {
-  
+  int tempRN = 0; //temp room num
+  int roomExist = 0;
+  for(auto exits : ((*(r.begin()+rn))->getR()))//check all keys and see 
+  {
+    ++tempRN;
+    //cout<<(exits.first);
+    //cout<<p;
+    if((*(exits.first)) == p)//exit exists
+    {
+      //cout << "here";
+      roomExist = 1;
+      rn = tempRN;//change room number
+      descRoom(rn, r);
+    }
+  }
+  if(roomExist == 0)//room doesn't exist
+  {
+    cout << "that doesn't exist."<<endl;
+  }
 }
-void processD(char p[15], int rn, vector<item>& i)
+void processD(char p[15], int& rn, vector<item>& i, vector<Room*>& r)
 {
 }
-void processT(char p[15], int rn, vector<Room*>& r)
+void processT(char p[15], int& rn, vector<item>& i, vector<Room*>& r)
 {
 }
 
