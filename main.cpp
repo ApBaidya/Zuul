@@ -32,21 +32,24 @@ using namespace std;
 //function defs
 void mkRoom(vector<Room*>& r);//set up room vector
 void updateRooms(vector<Room>* r);//check certain room conditions
+void descRoom(int n, vector<Room*>& r);//spit out that room description
 void help();//cout possible inputs
 void drop();//remove item from player inv and add to room inv
 void take();//opposite of drop
 void goRoom();//switch current room, cout new room details
 void quit();//delete vector objects and all that stuff, say goodbye
-void numToItem();//when cout room details, take room item nums to items
-void itemToNum();//take player input and change into num
-void specialDia();//conditional text for rooms
+
+
 //main class
 int main()
 {
+  int playing = 0; 
+  int roomN = 2; //current room number
   //hello, room vector!
   vector<Room*> rooms;
   mkRoom(rooms);
   cout << "Wakey wakey, friend\n No need to look around like that, you won't see me\n Why? Because I'm in your head, of course!"<<endl;
+  descRoom(roomN, rooms);
   return 0;
 }
 
@@ -55,21 +58,62 @@ int main()
 void mkRoom(vector<Room*>& r)
 {
   //DESCRIPTIONS
-  char d[300] = "[Root 1] Endless paths behind you, and all of them would lead up to here. Anyways, lemme describe this place! Dark, damp, and dusty! The air is thick. Lets take it one breath at a time, alright?";
+  char d[300] = "[Root 1] Endless paths behind you, and all of them would lead up to here. Anyways, lemme describe this place! Dark, damp, and dusty!";
   Room* ro = new Room();//just...gonna manually make all 15 rooms
   (*ro).setD(d);//1
   d[0] = '\0';
   strcpy(d, "[Root 2] Quite similar to the 1st-oh look, theres a little hand sticking out of the ground! Say hi!It seems like it likes to trade...");
   Room* ro1 = new Room();
   (*ro1).setD(d);//2
-  
+  d[0]='\0';
+  strcpy(d, "[Root 3] There really isn't much difference when it comes to the roots. The 1st looks like the 2nd, the 2nd like the 3rd...it is rather boring to be here, actually.");
+ 
+  Room* ro2 =new Room();
+  (*ro2).setD(d);//3
+  cout << "HELLO"<< endl;
+  d[0]='\0';
+  strcpy(d, "[Stump] Well. It's rather spacious here, which is nice. Not much easier to breathe, given how you look.");
+  Room* ro3 = new Room();
+  (*ro3).setD(d);//4
+  d[0] = '\0';
   //ITEMS
+  item i1;//random item object
+  char n1[15] = "old shield";//random array to hold item name
+  i1.name = new char[15];//NEVER FORGET!!!!
+  strcpy(i1.name, n1);
+  (*ro2).setI(i1);//r3 item
   //EXITS
-  
+  char* c = new char;
+  (*c) = 'e';
+  (*ro).setR(c, ro3);
+  //(*ro1).setR('n', ro3);
+  char* c2 = new char;
+  (*c2) = 'w';
+  (*ro2).setR(c2, ro3);
+  //PUSH BACK
+  r.push_back(ro);
+  r.push_back(ro1);
+  r.push_back(ro2);
+  r.push_back(ro3);
 }
 
 void updateRooms()
 {
+}
+
+void descRoom(int n, vector<Room*>& r)
+{
+  cout << ((*(r.begin()+n))->getD())<< endl;//description
+  cout << "ITEMS:" << endl;
+  for (vector<item>::iterator it =(*((*(r.begin()+n))->getI())).begin(); it != (*((*(r.begin()+n))->getI())).end(); ++it)
+  {
+    cout << (*it).name << endl;
+  }
+  cout << "EXITS:"<<endl;
+  for(auto exits : ((*(r.begin()+n))->getR()))//learned about auto from https://www.w3schools.com/cpp/cpp_maps.asp 
+  {
+    cout << (*(exits.first)) << endl;
+  }
 }
 
 void processComd()

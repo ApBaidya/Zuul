@@ -3,8 +3,10 @@
 #include <vector>
 #include <map>
 #include "Room.h"
-
+#include <iostream>
 using namespace std;
+
+
 
 Room::Room()
 {
@@ -22,40 +24,39 @@ Room::~Room()
 void Room::setD(char in_d[300])
 {
   strcpy(description, in_d);
+  //cout << description;
 }
-void Room::setR(char exit, Room* o)
+void Room::setR(char* exit, Room* o)
 {
   neigh[exit] = o;//add room pointer to neigh with key exit
 }
-void Room::setI(int in_i)//for initial set and drop function
+void Room::setI(item i)//for initial set and drop function
 {
-  items.push_back(in_i);
+  items.push_back(i);
 }
 
 char* Room::getD()
 {
+  //cout << description;
   return description;
 }
-map<char, Room*> Room::getR()
+map<char*, Room*> Room::getR()
 {
   return neigh;
 }
-vector<int> Room::getI()
+vector<item>* Room::getI()
 {
-  return items;
+  return &items;//use & to return a pointer for any object!
 }
 
-void Room::updateI(int in_i2)//for take function
+void Room::updateI(char in_i[15])//for take function
 {
-  int index;
-  int i = 0;
-  for(vector<int>::iterator it = items.begin(); it != items.begin(); ++it)
+  for (vector<item>::iterator it = items.begin(); it != items.end(); ++it)
   {
-    if ((*it) == in_i2)//if the int is the desired item num 
+    if(strcmp((*it).name, in_i)==0)
     {
-      index = i; //set index to the index I want
+      items.erase(it);
+      return;
     }
-    ++i; //just continue to add to i
   }
-  items.erase(items.begin()+index);
 }
