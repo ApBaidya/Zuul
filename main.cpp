@@ -33,6 +33,9 @@ using namespace std;
 void mkRoom(vector<Room*>& r);//set up room vector
 void updateRooms(vector<Room>* r);//check certain room conditions
 void descRoom(int n, vector<Room*>& r);//spit out that room description
+void processE();//does exit exist
+void processD();//does item exist in player inv
+void processT();//does item exist in room inv
 void help();//cout possible inputs
 void drop();//remove item from player inv and add to room inv
 void take();//opposite of drop
@@ -43,13 +46,53 @@ void quit();//delete vector objects and all that stuff, say goodbye
 //main class
 int main()
 {
+  vector<item> playerInv;//player inventory
   int playing = 0; 
   int roomN = 2; //current room number
+  int playInput[15];//player input
   //hello, room vector!
-  vector<Room*> rooms;
+  vector<Room*> rooms;//room vector
   mkRoom(rooms);
   cout << "Wakey wakey, friend\n No need to look around like that, you won't see me\n Why? Because I'm in your head, of course!"<<endl;
-  descRoom(roomN, rooms);
+  cout << "You seem confused. Ask me for [help] if you don't know what you're doing!"<<endl;
+  descRoom(roomN, rooms);//print out first room
+  while(playing == 0)
+  {
+    cout << endl;
+    cout<<"do you want to do anything?" << endl;
+    cin >> playInput;
+    cin.ignore(10, '\n');
+    cin.clear();
+    cout << endl;
+    if(strcmp(playInput, "quit"))
+    {
+      quit();
+      playing = 1;
+    }
+    else if(strcmp(playerInput, "go"))
+    {
+      //ask dir
+      cout << "Go where?";
+      cin >> playerInput;
+      cin.ignore(10, '\n');
+      cout.clear();
+      //confirm if possible
+      //either ask again
+    }
+    else if(strcmp(playerInput, "drop"))
+    {
+      //ask what to drop
+      cout << "Drop what?";
+      //check if in inv
+      //move to room if poss
+    }
+    else if(strcmp(playerInput, "take"))
+    {
+      //ask what
+      //check room inv
+      //move to player inv if poss
+    }
+  }
   return 0;
 }
 
@@ -97,8 +140,9 @@ void mkRoom(vector<Room*>& r)
   r.push_back(ro3);
 }
 
-void updateRooms()
+void updateRooms(vector<Room*>& r))
 {
+  
 }
 
 void descRoom(int n, vector<Room*>& r)
@@ -115,13 +159,24 @@ void descRoom(int n, vector<Room*>& r)
     cout << (*(exits.first)) << endl;
   }
 }
-
-void processComd()
+//p is playerInput, rn is room number
+void processE(char p[15], int rn, vector<Room*>& r)
+{
+  
+}
+void processD(char p[15], int rn, vector<item>& i)
+{
+}
+void processT(char p[15], int rn, vector<Room*>& r)
 {
 }
 
 void help()
 {
+  cout << "type [go], enter, then type either [n][e][s][w] to move rooms."<<endl;
+  cout << "type [take], enter, then the name of object to pick up item." << endl;
+  cout << "type [drop], enter, then the name of object to drop it." << endl;
+  cout << "type [quit] to end the game."<<endl;
 }
 
 void drop()
