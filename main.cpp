@@ -168,6 +168,7 @@ void descRoom(int n, vector<Room*>& r)
     cout << (*(exits.first)) << endl;
   }
 }
+
 //p is playerInput, rn is room number
 void processE(char p, int& rn, vector<Room*>& r)
 {
@@ -191,9 +192,27 @@ void processE(char p, int& rn, vector<Room*>& r)
     cout << "that doesn't exist."<<endl;
   }
 }
+
 void processD(char p[15], int& rn, vector<item>& i, vector<Room*>& r)
 {
+  
+  for (vector<item>::iterator it = i.begin(); it != i.end(); ++it)//go through player inventory
+  {
+    cout << (*it).name;
+    if(strcmp((*it).name, p)==0)
+    {
+      item newI;//make new object
+      newI.name = new char[15];
+      strcpy(newI.name, p);//push it into room next
+      (*(r.begin()+rn))->setI(newI);
+      //delete object in player inventory
+      cout << (*it).name << endl;
+      return;
+    }
+  }
+
 }
+
 void processT(char p[15], int& rn, vector<item>& i, vector<Room*>& r)
 {
 }
