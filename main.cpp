@@ -33,20 +33,24 @@ using namespace std;
 void mkRoom(vector<Room*>& r);//set up room vector
 void updateRooms(vector<Room>* r);//check certain room conditions
 void descRoom(int n, vector<Room*>& r);//spit out that room description
-void processE(char p, int& rn, vector<Room*>& r);//does exit exist --> move if so
-void processD(char p[15], int& rn, vector<item>& i, vector<Room*>& r);//does item exist in player inv --> drop if so
-void processT(char p[15], int& rn, vector<item>& i, vector<Room*>& r);//does item exist in room inv -- take if so
+void processE(char p, int& rn, vector<Room*>& r);//does exit exist --> move if so--> basically move rooms
+void processD(char p[15], int& rn, vector<item*>& i, vector<Room*>& r);//does item exist in player inv --> drop if so
+void processT(char p[15], int& rn, vector<item*>& i, vector<Room*>& r);//does item exist in room inv -- take if so
 void help();//cout possible inputs
 void drop();//remove item from player inv and add to room inv
 void take();//opposite of drop
-void goRoom();//switch current room, cout new room details
 void quit();//delete vector objects and all that stuff, say goodbye
 
 
 //main class
 int main()
 {
-  vector<item> playerInv;//player inventory
+  vector<item*> playerInv;//player inventory
+  item* test = new item;
+  char test1[15] ="banana";
+  (*test).name = new char[15];
+  strcpy((*test).name, test1);
+  playerInv.push_back(test);
   int playing = 0; 
   int roomN = 2; //current room number
   char playerInput[15];//player input
@@ -59,6 +63,7 @@ int main()
   descRoom(roomN, rooms);//print out first room
   while(playing == 0)
   {
+    playerInput[0] = '\0';
     cout << endl;
     cout<<"do you want to do anything?" << endl;
     cin >> playerInput;
@@ -83,11 +88,17 @@ int main()
     else if(strcmp(playerInput, "drop")==0)
     {
       //ask what to drop
+      if (playerInv.empty() != true)
+      {
+	cout << "current items: "<<(*(playerInv.begin()))->name<<endl;
+      }
+      cout << "Room items:" << (*((*((*(rooms.begin()+roomN))->getI())).begin()))->name;
       cout << "Drop what?"<<endl;
       cin >> playerInput;
       cin.ignore(10, '\n');
       cin.clear();
       //check if in inv + act
+      cout << "okay"<<endl;
       processD(playerInput, roomN, playerInv, rooms);
       
     }
@@ -119,21 +130,22 @@ void mkRoom(vector<Room*>& r)
   (*ro1).setD(d);//2
   d[0]='\0';
   strcpy(d, "[Root 3] There really isn't much difference when it comes to the roots. The 1st looks like the 2nd, the 2nd like the 3rd...it is rather boring to be here, actually.");
- 
   Room* ro2 =new Room();
   (*ro2).setD(d);//3
-  cout << "HELLO"<< endl;
+  //cout << "HELLO"<< endl;
   d[0]='\0';
   strcpy(d, "[Stump] Well. It's rather spacious here, which is nice. Not much easier to breathe, given how you look.");
+  //cout << "HI"<<endl;
   Room* ro3 = new Room();
   (*ro3).setD(d);//4
   d[0] = '\0';
   //ITEMS
-  item i1;//random item object
-  char n1[15] = "old shield";//random array to hold item name
-  i1.name = new char[15];//NEVER FORGET!!!!
-  strcpy(i1.name, n1);
+  item* i1 = new item;//random item object
+  char n1[15] = "old_shield";//random array to hold item name
+  (*i1).name = new char[15];//NEVER FORGET!!!!
+  strcpy((*i1).name, n1);
   (*ro2).setI(i1);//r3 item
+  //cout << "HIIIII"<<endl;
   //EXITS
   char* c = new char;
   (*c) = 'e';
@@ -142,6 +154,7 @@ void mkRoom(vector<Room*>& r)
   char* c2 = new char;
   (*c2) = 'w';
   (*ro2).setR(c2, ro3);
+  char* c3 = new char;
   //PUSH BACK
   r.push_back(ro);
   r.push_back(ro1);
@@ -158,9 +171,9 @@ void descRoom(int n, vector<Room*>& r)
 {
   cout << ((*(r.begin()+n))->getD())<< endl;//description
   cout << "ITEMS:" << endl;
-  for (vector<item>::iterator it =(*((*(r.begin()+n))->getI())).begin(); it != (*((*(r.begin()+n))->getI())).end(); ++it)
+  for (vector<item*>::iterator it =((*(*(r.begin()+n))).getI())->begin(); it != ((*(*(r.begin()+n))).getI())->end(); ++it)
   {
-    cout << (*it).name << endl;
+    cout << (*(*it)).name << endl;
   }
   cout << "EXITS:"<<endl;
   for(auto exits : ((*(r.begin()+n))->getR()))//learned about auto from https://www.w3schools.com/cpp/cpp_maps.asp 
@@ -172,19 +185,36 @@ void descRoom(int n, vector<Room*>& r)
 //p is playerInput, rn is room number
 void processE(char p, int& rn, vector<Room*>& r)
 {
-  int tempRN = 0; //temp room num
-  int roomExist = 0;
+  int tempRoom = 0;
+  int roomExist = 0;//room does exist = 0
   for(auto exits : ((*(r.begin()+rn))->getR()))//check all keys and see 
   {
-    ++tempRN;
-    //cout<<(exits.first);
-    //cout<<p;
+    
+    cout<<(exits.first);
+    cout<<p;
     if((*(exits.first)) == p)//exit exists
     {
       //cout << "here";
       roomExist = 1;
-      rn = tempRN;//change room number
-      descRoom(rn, r);
+      //find room number in room vector
+      for(vector<Room*>::iterator it =r.begin(); it != r.end(); ++it)
+      {
+	//cout<<((*(r.begin()+rn))->getD());
+	char d1[300];//just...make an array for safety reasons.
+	strcpy(d1,(*it)->getD());
+	//cout << ((*it)->getD())<<endl;
+	char d2[300];
+	strcpy(d2,(*(r.begin()+rn))->getD());
+	//cout << d1;
+	//cout << d2;
+	if(strcmp(d1,d2))//if room is found, compare the room descriptions...find a better way if possible
+	{
+	  //cout<<"HERE";
+	  rn = tempRoom;
+	  descRoom(rn, r);
+	}
+	++ tempRoom;
+      }
     }
   }
   if(roomExist == 0)//room doesn't exist
@@ -193,28 +223,68 @@ void processE(char p, int& rn, vector<Room*>& r)
   }
 }
 
-void processD(char p[15], int& rn, vector<item>& i, vector<Room*>& r)
+void processD(char p[15], int& rn, vector<item*>& i, vector<Room*>& r)
 {
-  
-  for (vector<item>::iterator it = i.begin(); it != i.end(); ++it)//go through player inventory
+  //cout << "HI";
+  if(i.empty()==false)
   {
-    cout << (*it).name;
-    if(strcmp((*it).name, p)==0)
-    {
-      item newI;//make new object
-      newI.name = new char[15];
-      strcpy(newI.name, p);//push it into room next
-      (*(r.begin()+rn))->setI(newI);
-      //delete object in player inventory
-      cout << (*it).name << endl;
-      return;
-    }
+    //cout << (*(i.begin()))->name;
+    for (vector<item*>::iterator it = i.begin(); it != i.end(); ++it)//go through player inventory
+      {
+	//cout << (*(*it)).name;
+	//cout << p;
+	if(strcmp((*(*it)).name, p)==0)
+	  {
+	    cout << "HERE";
+	    item* newI = new item;//make new object
+	    (*newI).name = new char[15];
+	    strcpy((*newI).name, p);//after setting name, push it into room next
+	    (*(r.begin()+rn))->setI(newI);
+	    cout <<"ROOM:"<<endl;
+	    cout << (*((*((*(r.begin()+rn))->getI())).begin()))->name<<endl;
+	    //delete object in player inventory
+            delete[] (*it)->name;//kill that character array
+	    i.erase(it);//get rid of pointer and such
+	    return;
+	  }
+      }
   }
-
+  cout << "Oh ho ho, that doesn't seem to exist!"<<endl;
 }
 
-void processT(char p[15], int& rn, vector<item>& i, vector<Room*>& r)
+void processT(char p[15], int& rn, vector<item*>& i, vector<Room*>& r)//pretty much the opposite dir of drop, so code can be similar
 {
+    //cout << "HI";
+  if(i.empty()==false)
+  {
+    //cout << (*(i.begin()))->name;
+    for (vector<item*>::iterator it = (*((*(r.begin()+rn))->getI())).begin(); it != (*((*(r.begin()+rn))->getI())).end(); ++it)//go through room inventory
+      {
+        cout << (*(*it)).name;
+        cout << p;
+        if(strcmp(((*(*it)).name), p)==0)
+          {
+            cout << "HERE";
+            item* newI = new item;//make new object
+            (*newI).name = new char[15];
+            strcpy((*newI).name, p);//push it into room next
+            i.push_back(newI);
+	    cout << (*(i.begin()+1))->name;
+            cout <<"ROOM:"<<endl;
+            //delete object in room inventory
+            delete[] (*it)->name;//kill that character array
+            (*((*(r.begin()+rn))->getI())).erase(it);
+	    if((*((*(r.begin()+rn))->getI())).empty() == false)
+	    {
+	      cout << (*((*((*(r.begin()+rn))->getI())).begin()))->name;
+	    }
+	    cout << "YOU:"<<endl;
+	    cout << ((*(i.begin()+1))->name)<<endl;
+            return;
+          }
+      }
+  }
+  cout << "Oh ho ho, that doesn't seem to exist!"<<endl;
 }
 
 void help()
@@ -230,10 +300,6 @@ void drop()
 }
 
 void take()
-{
-}
-
-void goRoom()
 {
 }
 

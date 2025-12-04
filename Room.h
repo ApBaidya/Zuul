@@ -20,16 +20,16 @@ class Room
  private:
   char* description; //room description
   map<char*, Room*> neigh;
-  vector<item> items; //vector items: 3(old shield) 2(magic spear) 10(torn cloth) 8(lake water) 11(sacred sword)
+  vector<item*> items; //vector items: 3(old shield) 2(magic spear) 10(torn cloth) 8(lake water) 11(sacred sword)
  public:
   Room();//create
   ~Room();//death
   void setD(char in_d[300]);
   void setR(char* exit, Room* o);
-  void setI(item i);
+  void setI(item* i);
   char* getD();
-  map<char*, Room*> getR();
-  vector<item>* getI();
+  map<char*,Room*> getR();
+  vector<item*>* getI();
   void updateI(char in_i[15]);//name of item
 };
 
