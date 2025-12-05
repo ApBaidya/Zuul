@@ -88,11 +88,20 @@ int main()
     else if(strcmp(playerInput, "drop")==0)
     {
       //ask what to drop
+      cout << "current items:"<<endl;
       if (playerInv.empty() != true)
       {
-	cout << "current items: "<<(*(playerInv.begin()))->name<<endl;
+	for (vector<item*>::iterator it = playerInv.begin(); it != playerInv.end(); ++it)
+	{
+	  cout << (*(*it)).name<<endl;
+	}
       }
-      cout << "Room items:" << (*((*((*(rooms.begin()+roomN))->getI())).begin()))->name;
+      cout<<"Room item:"<<endl;
+      if((*((*(rooms.begin()+roomN))->getI())).empty() != true)
+      {
+	for (vector<item*>::iterator it = (*((*(rooms.begin()+roomN))->getI())).begin(); it != (*((*(rooms.begin()+roomN))->getI())).end(); ++it)
+	  cout << (*(*it)).name<<endl;
+      }
       cout << "Drop what?"<<endl;
       cin >> playerInput;
       cin.ignore(10, '\n');
@@ -100,10 +109,25 @@ int main()
       //check if in inv + act
       cout << "okay"<<endl;
       processD(playerInput, roomN, playerInv, rooms);
+      //cout << (*((*((*(rooms.begin()+roomN))->getI())).begin()+1))->name<<endl;
       
     }
     else if(strcmp(playerInput, "take")==0)
     {
+      cout << "current items:"<<endl;
+      if (playerInv.empty() != true)
+      {
+        for (vector<item*>::iterator it = playerInv.begin(); it != playerInv.end(); ++it)
+	{
+          cout << (*(*it)).name<<endl;
+        }
+      }
+      cout<<"Room item:"<<endl;
+      if((*((*(rooms.begin()+roomN))->getI())).empty() != true)
+      {
+        for (vector<item*>::iterator it = (*((*(rooms.begin()+roomN))->getI())).begin(); it != (*((*(rooms.begin()+roomN))->getI())).end(); ++it)
+          cout << (*(*it)).name<<endl;
+      }
       //ask what
       cout << "Take what?"<<endl;
       cin >> playerInput;
@@ -234,17 +258,23 @@ void processD(char p[15], int& rn, vector<item*>& i, vector<Room*>& r)
 	//cout << (*(*it)).name;
 	//cout << p;
 	if(strcmp((*(*it)).name, p)==0)
-	  {
-	    cout << "HERE";
-	    item* newI = new item;//make new object
-	    (*newI).name = new char[15];
-	    strcpy((*newI).name, p);//after setting name, push it into room next
-	    (*(r.begin()+rn))->setI(newI);
+	  { 
+	    //(*newI).name = new char[15];
+	    //strcpy((*newI).name, p);//after setting name, push it into room next
+	    (*(r.begin()+rn))->setI((*it));//give the room the pointer instead
+	    i.erase(it);//erase the pointer from the players inventory 
 	    cout <<"ROOM:"<<endl;
-	    cout << (*((*((*(r.begin()+rn))->getI())).begin()))->name<<endl;
-	    //delete object in player inventory
-            delete[] (*it)->name;//kill that character array
-	    i.erase(it);//get rid of pointer and such
+	    for (vector<item*>::iterator it = (*((*(r.begin()+rn))->getI())).begin(); it != (*((*(r.begin()+rn))->getI())).end(); ++it)
+	    {
+	      cout << (*(*it)).name<<endl;
+	    }
+	    if (i.empty()==false)
+	    {
+	      for (vector<item*>::iterator it = i.begin(); it != i.end(); ++it)
+	      {
+		cout << (*(*it)).name<<endl;
+	      }
+	    }
 	    return;
 	  }
       }
@@ -255,32 +285,30 @@ void processD(char p[15], int& rn, vector<item*>& i, vector<Room*>& r)
 void processT(char p[15], int& rn, vector<item*>& i, vector<Room*>& r)//pretty much the opposite dir of drop, so code can be similar
 {
     //cout << "HI";
-  if(i.empty()==false)
+  if((*((*(r.begin()+rn))->getI())).empty()==false)
   {
     //cout << (*(i.begin()))->name;
     for (vector<item*>::iterator it = (*((*(r.begin()+rn))->getI())).begin(); it != (*((*(r.begin()+rn))->getI())).end(); ++it)//go through room inventory
       {
-        cout << (*(*it)).name;
-        cout << p;
+        //cout << (*(*it)).name;
+        //cout << p;
         if(strcmp(((*(*it)).name), p)==0)
           {
-            cout << "HERE";
-            item* newI = new item;//make new object
-            (*newI).name = new char[15];
-            strcpy((*newI).name, p);//push it into room next
-            i.push_back(newI);
-	    cout << (*(i.begin()+1))->name;
-            cout <<"ROOM:"<<endl;
-            //delete object in room inventory
-            delete[] (*it)->name;//kill that character array
-            (*((*(r.begin()+rn))->getI())).erase(it);
-	    if((*((*(r.begin()+rn))->getI())).empty() == false)
+            i.push_back((*it));//give the player inventory the pointer instead
+            (*((*(r.begin()+rn))->getI())).erase(it);//erase the pointer from the players inventory
+	    cout <<"ROOM:"<<endl;
+	    if ((*((*(r.begin()+rn))->getI())).empty() == false)
 	    {
-	      cout << (*((*((*(r.begin()+rn))->getI())).begin()))->name;
+	      for (vector<item*>::iterator it = (*((*(r.begin()+rn))->getI())).begin(); it != (*((*(r.begin()+rn))->getI())).end(); ++it)
+	      {
+		cout << (*(*it)).name<<endl;
+	      }
 	    }
-	    cout << "YOU:"<<endl;
-	    cout << ((*(i.begin()+1))->name)<<endl;
-            return;
+	    for (vector<item*>::iterator it = i.begin(); it != i.end(); ++it)
+            {
+	      cout << (*(*it)).name<<endl;
+	    }
+	    return;
           }
       }
   }
