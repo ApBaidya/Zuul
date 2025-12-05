@@ -1,21 +1,11 @@
 /*
 Aparajita Baidya
-12/1/2025
+12/4/2025
 
 to do:
-Room Class
-Parser -->
-Verify command words -->
-return commands - 2 seperate words (ex: "go west" --> "go" (action) "west" (direction)) for process command func
 main functions:
 - mkRooms
 - updateRooms
-- processComd
-- showInventory
-- help
-- drop
-- take
-- goRoom
 - quit
 */
 
@@ -37,8 +27,6 @@ void processE(char p, int& rn, vector<Room*>& r);//does exit exist --> move if s
 void processD(char p[15], int& rn, vector<item*>& i, vector<Room*>& r);//does item exist in player inv --> drop if so
 void processT(char p[15], int& rn, vector<item*>& i, vector<Room*>& r);//does item exist in room inv -- take if so
 void help();//cout possible inputs
-void drop();//remove item from player inv and add to room inv
-void take();//opposite of drop
 void quit();//delete vector objects and all that stuff, say goodbye
 
 
@@ -321,14 +309,6 @@ void help()
   cout << "type [take], enter, then the name of object to pick up item." << endl;
   cout << "type [drop], enter, then the name of object to drop it." << endl;
   cout << "type [quit] to end the game."<<endl;
-}
-
-void drop()
-{
-}
-
-void take()
-{
 }
 
 void quit()
