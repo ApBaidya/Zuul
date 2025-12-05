@@ -17,8 +17,23 @@ Room::Room()
 Room::~Room()
 {
   delete[] description;
+  //delete items
+  for (vector<item*>::iterator it = items.begin(); it != items.end(); ++it)
+  {
+    delete[] (*(*it)).name;
+  }
   items.clear();
-  //how to deal with map?
+  //delete map
+  for (auto n : neigh)
+  {
+    murderList.push_back(n.first);//keep the keys 
+  }
+  neigh.clear();//get rid of everything in map
+  for (vector<char*>::iterator it = murderList.begin(); it != murderList.end(); ++it)
+  {    
+    delete[] (*it);
+  }
+  murderList.clear();
 }
 
 void Room::setD(char in_d[300])

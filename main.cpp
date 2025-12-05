@@ -27,7 +27,7 @@ void processE(char p, int& rn, vector<Room*>& r);//does exit exist --> move if s
 void processD(char p[15], int& rn, vector<item*>& i, vector<Room*>& r);//does item exist in player inv --> drop if so
 void processT(char p[15], int& rn, vector<item*>& i, vector<Room*>& r);//does item exist in room inv -- take if so
 void help();//cout possible inputs
-void quit();//delete vector objects and all that stuff, say goodbye
+void quit(vector<item*>& i, vector<Room*>& r);//delete vector objects and all that stuff, say goodbye
 
 
 //main class
@@ -60,7 +60,7 @@ int main()
     cout << endl;
     if(strcmp(playerInput, "quit")==0)
     {
-      quit();
+      quit( playerInv, rooms);
       playing = 1;
     }
     else if(strcmp(playerInput, "go")==0)
@@ -311,6 +311,16 @@ void help()
   cout << "type [quit] to end the game."<<endl;
 }
 
-void quit()
+void quit(vector<item*>& i, vector<Room*>& r)
 {
+  if (i.empty()==false)
+  {
+    for (vector<item*>::iterator it = i.begin(); it != i.end(); ++it)
+    {
+      delete[] (*(*it)).name;//get rid of name
+    }
+  }
+  i.clear();
+
 }
+

@@ -18,6 +18,7 @@ struct item
 class Room
 {
  private:
+  vector<char*> murderList; //contain pointers of the char* from the map
   char* description; //room description
   map<char*, Room*> neigh;
   vector<item*> items; //vector items: 3(old shield) 2(magic spear) 10(torn cloth) 8(lake water) 11(sacred sword)
