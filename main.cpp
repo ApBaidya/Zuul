@@ -21,14 +21,14 @@ using namespace std;
 
 //function defs
 void mkRoom(vector<Room*>& r);//set up room vector
-void updateRooms(vector<Room>* r);//check certain room conditions
+void updateRooms(vector<Room*>& r);//check certain room conditions
 void descRoom(int n, vector<Room*>& r);//spit out that room description
 void processE(char p, int& rn, vector<Room*>& r);//does exit exist --> move if so--> basically move rooms
 void processD(char p[15], int& rn, vector<item*>& i, vector<Room*>& r);//does item exist in player inv --> drop if so
 void processT(char p[15], int& rn, vector<item*>& i, vector<Room*>& r);//does item exist in room inv -- take if so
 void help();//cout possible inputs
 void quit(vector<item*>& i, vector<Room*>& r);//delete vector objects and all that stuff, say goodbye
-
+void end();
 
 //main class
 int main()
@@ -124,6 +124,7 @@ int main()
       //check room inv + act
       processT(playerInput, roomN, playerInv, rooms);
     }
+    updateRooms(rooms);
   }
   return 0;
 }
@@ -137,7 +138,7 @@ void mkRoom(vector<Room*>& r)
   Room* ro = new Room();//just...gonna manually make all 15 rooms
   (*ro).setD(d);//1
   d[0] = '\0';
-  strcpy(d, "[Root 2] Quite similar to the 1st-oh look, theres a little hand sticking out of the ground! Say hi!It seems like it likes to trade...");
+  strcpy(d, "[Root 2] Quite similar to the 1st-oh look, theres a little hand sticking out of the ground! Say hi! It seems like it likes to trade...");
   Room* ro1 = new Room();
   (*ro1).setD(d);//2
   d[0]='\0';
@@ -151,6 +152,38 @@ void mkRoom(vector<Room*>& r)
   Room* ro3 = new Room();
   (*ro3).setD(d);//4
   d[0] = '\0';
+  strcpy(d,"[Heart] Oh, look at this. The king is resting against the birch wood. Next to him...a pond that seems to really want a sword. Funky.");
+  Room* ro4 = new Room();
+  (*ro4).setD(d);//5
+  d[0] = '\0';
+  strcpy(d, "[Crown] Haha, I feel like I can almost see the sky beyond the leaves!");
+  Room* ro5 = new Room();
+  (*ro5).setD(d);//6
+  d[0] = '\0';
+  strcpy(d, "[1st Branch] A tall statue of a one-armed spearman wants its spear. He looks like you, hehe. You know what to do.");
+  Room* ro6 = new Room();
+  (*ro6).setD(d);//7
+  d[0] = '\0';
+  strcpy(d, "[2nd Branch] A bedchamber. In a tree. Okay, sure. Tell me, do you usually see beds like this in trees? Yeah, I didn't think so");
+  Room* ro7 = new Room();//8
+  (*ro7).setD(d);
+  d[0] = '\0';
+  strcpy(d, "[3rd Branch] Piles of cloth and armor lay at the foot of a door. Oh, uh, don't worry about the blood.");
+  Room* ro8 = new Room();
+  (*ro8).setD(d);//9
+  d[0] = '\0';
+  strcpy(d, "[4th Branch] A battlefield. Alrighty then! At least the fight is over! Mind your step, though. It's...a little bit messy...I don't really need to tell you that, though.");
+  Room* ro9 = new Room();
+  (*ro9).setD(d);//10
+  d[0] = '\0';
+  strcpy(d, "[5th Branch] Lonely.");
+  Room* ro10 = new Room();
+  (*ro10).setD(d);//11
+  d[0] = '\0';
+  strcpy(d, "[6 Branch] A statue of a lady holds her hand out for some water.");
+  Room* ro11 = new Room();
+  (*ro11).setD(d);//12
+  
   //ITEMS
   item* i1 = new item;//random item object
   char n1[15] = "old_shield";//random array to hold item name
@@ -174,9 +207,12 @@ void mkRoom(vector<Room*>& r)
   r.push_back(ro3);
 }
 
+
+
 void updateRooms(vector<Room*>& r)
 {
   
+  end();
 }
 
 void descRoom(int n, vector<Room*>& r)
@@ -327,3 +363,7 @@ void quit(vector<item*>& i, vector<Room*>& r)
   }
 }
 
+void end()
+{
+
+}
