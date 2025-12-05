@@ -321,6 +321,9 @@ void quit(vector<item*>& i, vector<Room*>& r)
     }
   }
   i.clear();
-
+  for (vector<Room*>::iterator it = r.begin(); it != r.end(); ++it)
+  {
+    delete (*it);
+  }
 }
 
