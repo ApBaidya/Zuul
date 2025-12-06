@@ -75,6 +75,10 @@ int main()
       playing = 1;
       //quit(playerInv, rooms);
     }
+    else if (strcmp(playerInput, "help")==0)
+    {
+      help();
+    }
     else if(strcmp(playerInput, "go")==0)
     {
       //ask dir
