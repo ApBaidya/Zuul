@@ -43,11 +43,13 @@ int main()
   int t2 = 0;
   int t3 = 0;
   vector<item*> playerInv;//player inventory
+  /*
   item* test = new item;
   char test1[15] ="banana";
   (*test).name = new char[15];
   strcpy((*test).name, test1);
   playerInv.push_back(test);
+  */
   int playing = 0; 
   int roomN = 0; //current room number
   char playerInput[15];//player input
@@ -110,27 +112,34 @@ int main()
     }
     else if(strcmp(playerInput, "take")==0)
     {
-      cout << "current items:"<<endl;
-      if (playerInv.empty() != true)
+      if(playerInv.size()>0)
       {
-        for (vector<item*>::iterator it = playerInv.begin(); it != playerInv.end(); ++it)
-	{
-          cout << (*(*it)).name<<endl;
-        }
-      }
-      cout<<"Room item:"<<endl;
-      if((*((*(rooms.begin()+roomN))->getI())).empty() != true)
-      {
-        for (vector<item*>::iterator it = (*((*(rooms.begin()+roomN))->getI())).begin(); it != (*((*(rooms.begin()+roomN))->getI())).end(); ++it)
-          cout << (*(*it)).name<<endl;
-      }
-      //ask what
-      cout << "Take what?"<<endl;
-      cin >> playerInput;
-      cin.ignore(10, '\n');
-      cin.clear();
+	cout << "current items:"<<endl;
+	if (playerInv.empty() != true)
+	  {
+	    for (vector<item*>::iterator it = playerInv.begin(); it != playerInv.end(); ++it)
+	      {
+		cout << (*(*it)).name<<endl;
+	      }
+	  }
+	cout<<"Room item:"<<endl;
+	if((*((*(rooms.begin()+roomN))->getI())).empty() != true)
+	  {
+	    for (vector<item*>::iterator it = (*((*(rooms.begin()+roomN))->getI())).begin(); it != (*((*(rooms.begin()+roomN))->getI())).end(); ++it)
+	      cout << (*(*it)).name<<endl;
+	  }
+	//ask what
+	cout << "Take what?"<<endl;
+	cin >> playerInput;
+	cin.ignore(10, '\n');
+	cin.clear();
       //check room inv + act
-      processT(playerInput, roomN, playerInv, rooms);
+	processT(playerInput, roomN, playerInv, rooms);
+      }
+      else
+	{
+	  cout << "Your inventory is full. You do know you only have one arm to hold things with, yes?";
+	}
     }
     updateRooms(pickedUpShield, t1, t2, t3, playing, roomN, openR10, openR8, openR11, openR14, openR15, rooms, playerInv);
   }
@@ -142,20 +151,82 @@ int main()
 void updateRooms(int& ps, int& t1, int& t2, int& t3, int& game, int& rn, int& r10, int& r8, int& r11, int& r14, int& r15, vector<Room*>& r, vector<item*>& i)//should have split this up into 3 functions
 {
   //open 10
-  if (r10 == 0)
+  if (r10 == 0)//maybe make a function to do the check next time
   {
     for (vector<item*>::iterator it =((*(*(r.begin()+6))).getI())->begin(); it != ((*(*(r.begin()+6))).getI())->end(); ++it)
-    {
-      if(strcmp(((*(*it)).name),"magic_spear")==0)
+      {//go through room before unlockable one's items
+	if(strcmp(((*(*it)).name),"magic_spear")==0)//if key in inv
       {
-	r.begin()+
+	char* c = new char;
+	(*c) = 'n';
+  	(*(r.begin()+6))->setR(c, (*(r.begin()+9)));//add to room map
+	cout << "a door has opened" <<endl;
+	return;
       }
     }
   }
-	//open 8
+  //the rest of the opens follow the same pattern
+  //open 8
+  if (r8 == 0)
+  {
+    for (vector<item*>::iterator it =((*(*(r.begin()+8))).getI())->begin(); it != ((*(*(r.begin()+8))).getI())->end(); ++it)
+    {
+      if(strcmp(((*(*it)).name),"torn_cloth")==0)
+      {
+        char* c = new char;
+        (*c) = 's';
+        (*(r.begin()+8))->setR(c, (*(r.begin()+7)));
+        cout << "a door has opened" <<endl;
+        return;
+      }
+    }
+  }
   //open 11
+  if (r11 == 0)
+  {
+    for (vector<item*>::iterator it =((*(*(r.begin()+11))).getI())->begin(); it != ((*(*(r.begin()+11))).getI())->end(); ++it)
+    {
+      if(strcmp(((*(*it)).name),"lake_water")==0)
+      {
+        char* c = new char;
+        (*c) = 'w';
+        (*(r.begin()+6))->setR(c, (*(r.begin()+10)));
+        cout << "a door has opened" <<endl;
+        return;
+      }
+    }
+  }
   //open 14
+  if (r14 == 0)
+  {
+    for (vector<item*>::iterator it =((*(*(r.begin()+12))).getI())->begin(); it != ((*(*(r.begin()+12))).getI())->end(); ++it)
+    {
+      if(strcmp(((*(*it)).name),"sacred_sword")==0)
+      {
+        char* c = new char;
+        (*c) = 'n';
+        (*(r.begin()+12))->setR(c, (*(r.begin()+13)));
+        cout << "a door has opened" <<endl;
+        return;
+      }
+    }
+  }
   //open 15
+  if (r15 == 0)
+  {
+    for (vector<item*>::iterator it =((*(*(r.begin()+14))).getI())->begin(); it != ((*(*(r.begin()+14))).getI())->end(); ++it)
+    {
+      if(strcmp(((*(*it)).name),"magic_spear")==0)
+      {
+        char* c = new char;
+        (*c) = 'n';
+        (*(r.begin()+13))->setR(c, (*(r.begin()+14)));
+        cout << "a door has opened" <<endl;
+        return;
+      }
+    }
+  }
+  //just a check for the trade functions to work
   if (i.empty()==false)
   {
     for(vector<item*>::iterator it = i.begin(); it != i.end(); ++it)
@@ -337,7 +408,7 @@ void mkRoom(vector<Room*>& r)
   strcpy((*i2).name, n2);
   (*ro9).setI(i2);//r10 item
   item* i3 = new item;
-  char n3[15] = "late_water";
+  char n3[15] = "lake_water";
   (*i3).name = new char[15];
   strcpy((*i3).name, n3);
   (*ro7).setI(i3);//r8 item
