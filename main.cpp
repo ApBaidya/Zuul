@@ -1,6 +1,6 @@
 /*
 Aparajita Baidya
-12/4/2025
+12/5/2025
 
 to do:
 main functions:
@@ -21,7 +21,7 @@ using namespace std;
 
 //function defs
 void mkRoom(vector<Room*>& r);//set up room vector
-void updateRooms(vector<Room*>& r);//check certain room conditions
+void updateRooms(int& r10, int& r8, int& r11, int& r14, int& r15, vector<Room*>& r);//check certain room conditions
 void descRoom(int n, vector<Room*>& r);//spit out that room description
 void processE(char p, int& rn, vector<Room*>& r);//does exit exist --> move if so--> basically move rooms
 void processD(char p[15], int& rn, vector<item*>& i, vector<Room*>& r);//does item exist in player inv --> drop if so
@@ -33,6 +33,11 @@ void end();
 //main class
 int main()
 {
+  int openR10 = 0;//if greater than 0, then door is open
+  int openR8 = 0;
+  int openR11 = 0;
+  int openR14 = 0;
+  int openR15 = 0;
   vector<item*> playerInv;//player inventory
   item* test = new item;
   char test1[15] ="banana";
@@ -60,8 +65,8 @@ int main()
     cout << endl;
     if(strcmp(playerInput, "quit")==0)
     {
-      quit( playerInv, rooms);
       playing = 1;
+      quit(playerInv, rooms);
     }
     else if(strcmp(playerInput, "go")==0)
     {
@@ -97,7 +102,6 @@ int main()
       //check if in inv + act
       cout << "okay"<<endl;
       processD(playerInput, roomN, playerInv, rooms);
-      //cout << (*((*((*(rooms.begin()+roomN))->getI())).begin()+1))->name<<endl;
       
     }
     else if(strcmp(playerInput, "take")==0)
@@ -124,7 +128,7 @@ int main()
       //check room inv + act
       processT(playerInput, roomN, playerInv, rooms);
     }
-    updateRooms(rooms);
+    updateRooms(openR10, openR8, openR11, openR14, openR15, rooms);
   }
   return 0;
 }
@@ -164,7 +168,7 @@ void mkRoom(vector<Room*>& r)
   Room* ro6 = new Room();
   (*ro6).setD(d);//7
   d[0] = '\0';
-  strcpy(d, "[2nd Branch] A bedchamber. In a tree. Okay, sure. Tell me, do you usually see beds like this in trees? Yeah, I didn't think so");
+  strcpy(d, "[2nd Branch] A bedchamber in a lake. In a tree. Okay, sure. Tell me, do you usually see beds like this in trees? Yeah, I didn't think so");
   Room* ro7 = new Room();//8
   (*ro7).setD(d);
   d[0] = '\0';
@@ -176,43 +180,155 @@ void mkRoom(vector<Room*>& r)
   Room* ro9 = new Room();
   (*ro9).setD(d);//10
   d[0] = '\0';
-  strcpy(d, "[5th Branch] Lonely.");
+  strcpy(d, "[5th Branch] Lonely, lonely, I feel so lonely-.");
   Room* ro10 = new Room();
   (*ro10).setD(d);//11
   d[0] = '\0';
-  strcpy(d, "[6 Branch] A statue of a lady holds her hand out for some water.");
+  strcpy(d, "[6th Branch] A statue of a lady holds her hand out for some water.");
   Room* ro11 = new Room();
   (*ro11).setD(d);//12
-  
+  d[0] = '\0';
+  strcpy(d, "[7th Branch] Ah, another statue of the spearman! And another door behing him! Hmm, you smell flowers? The sea? Okay then, not sure where that's coming from.");
+  Room* ro12 = new Room();
+  (*ro12).setD(d);//13
+  d[0] = '\0';
+  strcpy(d, "[The Garden] White flowers with a soft glow blanket the land before you. Oh, a third statue.\n Are you ready?");
+  Room* ro13 = new Room();
+  (*ro13).setD(d);//14
+  d[0] = '\0';
+  strcpy(d, "[To the Isle] The sea you mentioned is here. And so is the boat. Are you ready? Regardless, it's time.");
+  Room* ro14 = new Room();
+  (*ro14).setD(d);//15
   //ITEMS
   item* i1 = new item;//random item object
   char n1[15] = "old_shield";//random array to hold item name
   (*i1).name = new char[15];//NEVER FORGET!!!!
   strcpy((*i1).name, n1);
   (*ro2).setI(i1);//r3 item
+  item* i2 = new item;
+  char n2[15] = "torn_cloth";
+  (*i2).name = new char[15];
+  strcpy((*i2).name, n2);
+  (*ro9).setI(i2);//r10 item
+  item* i3 = new item;
+  char n3[15] = "late_water";
+  (*i3).name = new char[15];
+  strcpy((*i3).name, n3);
+  (*ro7).setI(i3);//r8 item
+  item* i4 = new item;
+  char n4[15] = "sacred_sword";
+  (*i4).name = new char[15];
+  strcpy((*i4).name, n4);
+  (*ro11).setI(i4);//r11 item
+  //get r2 item by trading with hand in r2;
   //cout << "HIIIII"<<endl;
   //EXITS
+  //1
   char* c = new char;
   (*c) = 'e';
   (*ro).setR(c, ro3);
-  //(*ro1).setR('n', ro3);
+  //2
+  char* c1 = new char;
+  (*c1) = 'n';
+  (*ro1).setR(c1,ro3);
+  //3
   char* c2 = new char;
   (*c2) = 'w';
   (*ro2).setR(c2, ro3);
+  //4
   char* c3 = new char;
+  (*c3) = 'n';
+  (*ro3).setR(c3, ro4);
+  char* c4 = new char;
+  (*c4) = 'e';
+  (*ro3).setR(c4, ro2);
+  char* c5 = new char;
+  (*c5) = 's';
+  (*ro3).setR(c5, ro1);
+  char* c6 = new char;
+  (*c6) = 'w';
+  (*ro3).setR(c6, ro);
+  //5
+  char* c7 = new char;
+  (*c7) = 'n';
+  (*ro4).setR(c7, ro5);
+  char* c8 = new char;
+  (*c8) = 'w';
+  (*ro4).setR(c8, ro6);
+  char* c9 = new char;
+  (*c9) = 'e';
+  (*ro4).setR(c9, ro8);
+  char* c10 = new char;
+  (*c10) = 's';
+  (*ro4).setR(c10, ro3);
+  //6
+  char* c11 = new char;
+  (*c11) = 's';
+  (*ro5).setR(c11, ro4);
+  char* c12 = new char;
+  (*c12) = 'n';
+  (*ro5).setR(c12, ro11);
+  char* c13 = new char;
+  (*c13) = 'e';
+  (*ro5).setR(c13, ro12);
+  //7
+  char* c14 = new char;
+  (*c14) = 'e';
+  (*ro6).setR(c14, ro4);
+  //8
+  char* c15 = new char;
+  (*c15) = 'n';
+  (*ro7).setR(c15, ro8);
+  //9
+  char* c16 = new char;
+  (*c16) = 'w';
+  (*ro8).setR(c16, ro4);
+  //10
+  char* c17 = new char;
+  (*c17) = 's';
+  (*ro9).setR(c17, ro6);
+  //11
+  char* c18 = new char;
+  (*c18) = 'e';
+  (*ro10).setR(c18, ro11);
+  //12
+  char* c19 = new char;
+  (*c19) = 's';
+  (*ro11).setR(c19, ro5);
+  //13
+  char* c20 = new char;
+  (*c20) = 'w';
+  (*ro12).setR(c20, ro5);
+  //14
+  char* c21 = new char;
+  (*c21) = 's';
+  (*ro13).setR(c21, ro11);
+  //15, you can't go back when you get to room 15. the game ends here.
   //PUSH BACK
   r.push_back(ro);
   r.push_back(ro1);
   r.push_back(ro2);
   r.push_back(ro3);
+  r.push_back(ro4);
+  r.push_back(ro5);
+  r.push_back(ro6);
+  r.push_back(ro7);
+  r.push_back(ro8);
+  r.push_back(ro9);
+  r.push_back(ro10);
+  r.push_back(ro11);
+  r.push_back(ro12);
+  r.push_back(ro13);
+  r.push_back(ro14);
 }
 
 
 
-void updateRooms(vector<Room*>& r)
+void updateRooms(int& r10, int& r8, int& r11, int& r14, int& r15, vector<Room*>\
+& r)
 {
   
-  end();
+  //end();
 }
 
 void descRoom(int n, vector<Room*>& r)
@@ -237,9 +353,8 @@ void processE(char p, int& rn, vector<Room*>& r)
   int roomExist = 0;//room does exist = 0
   for(auto exits : ((*(r.begin()+rn))->getR()))//check all keys and see 
   {
-    
-    cout<<(exits.first);
-    cout<<p;
+    //cout<<(exits.first);
+    //cout<<p;
     if((*(exits.first)) == p)//exit exists
     {
       //cout << "here";
@@ -247,19 +362,18 @@ void processE(char p, int& rn, vector<Room*>& r)
       //find room number in room vector
       for(vector<Room*>::iterator it =r.begin(); it != r.end(); ++it)
       {
+	cout << tempRoom;
 	//cout<<((*(r.begin()+rn))->getD());
 	char d1[300];//just...make an array for safety reasons.
 	strcpy(d1,(*it)->getD());
-	//cout << ((*it)->getD())<<endl;
-	char d2[300];
-	strcpy(d2,(*(r.begin()+rn))->getD());
-	//cout << d1;
-	//cout << d2;
-	if(strcmp(d1,d2))//if room is found, compare the room descriptions...find a better way if possible
+	//cout << ((*it)->getD())<<endl;	
+	//cout << d1;	
+	if(strcmp(d1,((*(exits.second)).getD()))==0)//if room is found, compare the room descriptions...find a better way if possible
 	{
 	  //cout<<"HERE";
 	  rn = tempRoom;
 	  descRoom(rn, r);
+	  return;
 	}
 	++ tempRoom;
       }
