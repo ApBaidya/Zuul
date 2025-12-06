@@ -21,23 +21,27 @@ using namespace std;
 
 //function defs
 void mkRoom(vector<Room*>& r);//set up room vector
-void updateRooms(int& r10, int& r8, int& r11, int& r14, int& r15, vector<Room*>& r);//check certain room conditions
+void updateRooms(int& ps, int& t1, int& t2, int& t3, int& game, int& rn, int& r10, int& r8, int& r11, int& r14, int& r15, vector<Room*>& r, vector<item*>& i);
 void descRoom(int n, vector<Room*>& r);//spit out that room description
 void processE(char p, int& rn, vector<Room*>& r);//does exit exist --> move if so--> basically move rooms
 void processD(char p[15], int& rn, vector<item*>& i, vector<Room*>& r);//does item exist in player inv --> drop if so
 void processT(char p[15], int& rn, vector<item*>& i, vector<Room*>& r);//does item exist in room inv -- take if so
 void help();//cout possible inputs
 void quit(vector<item*>& i, vector<Room*>& r);//delete vector objects and all that stuff, say goodbye
-void end();
+
 
 //main class
 int main()
 {
+  int pickedUpShield = 0;
   int openR10 = 0;//if greater than 0, then door is open
   int openR8 = 0;
   int openR11 = 0;
   int openR14 = 0;
   int openR15 = 0;
+  int t1 = 0;//trade
+  int t2 = 0;
+  int t3 = 0;
   vector<item*> playerInv;//player inventory
   item* test = new item;
   char test1[15] ="banana";
@@ -45,7 +49,7 @@ int main()
   strcpy((*test).name, test1);
   playerInv.push_back(test);
   int playing = 0; 
-  int roomN = 2; //current room number
+  int roomN = 0; //current room number
   char playerInput[15];//player input
   char dir; //dir input
   //hello, room vector!
@@ -66,7 +70,7 @@ int main()
     if(strcmp(playerInput, "quit")==0)
     {
       playing = 1;
-      quit(playerInv, rooms);
+      //quit(playerInv, rooms);
     }
     else if(strcmp(playerInput, "go")==0)
     {
@@ -128,11 +132,133 @@ int main()
       //check room inv + act
       processT(playerInput, roomN, playerInv, rooms);
     }
-    updateRooms(openR10, openR8, openR11, openR14, openR15, rooms);
+    updateRooms(pickedUpShield, t1, t2, t3, playing, roomN, openR10, openR8, openR11, openR14, openR15, rooms, playerInv);
   }
+  quit(playerInv, rooms);
   return 0;
 }
 
+
+void updateRooms(int& ps, int& t1, int& t2, int& t3, int& game, int& rn, int& r10, int& r8, int& r11, int& r14, int& r15, vector<Room*>& r, vector<item*>& i)//should have split this up into 3 functions
+{
+  //open 10
+  if (r10 == 0)
+  {
+    for (vector<item*>::iterator it =((*(*(r.begin()+6))).getI())->begin(); it != ((*(*(r.begin()+6))).getI())->end(); ++it)
+    {
+      if(strcmp(((*(*it)).name),"magic_spear")==0)
+      {
+	r.begin()+
+      }
+    }
+  }
+	//open 8
+  //open 11
+  //open 14
+  //open 15
+  if (i.empty()==false)
+  {
+    for(vector<item*>::iterator it = i.begin(); it != i.end(); ++it)
+    {
+      if (strcmp((*(*it)).name, "old_shield") == 0)
+      {
+	++ ps;
+	cout << ps<<endl;
+      }
+    }
+  }
+  int goodEnd = 0;
+  if ((*((*(r.begin()+3))->getI())).empty() == false)//check if sword is in Heart
+  {
+    for (vector<item*>::iterator it =((*(*(r.begin()+4))).getI())->begin(); it != ((*(*(r.begin()+4))).getI())->end(); ++it)
+    {
+      if(strcmp(((*(*it)).name),"sacred_sword")==0)
+      {
+	goodEnd = 1;
+      }
+    }
+  }
+  else
+  {
+    goodEnd = 0;
+  }
+  if (rn == 14 && goodEnd == 1)//good end txt
+  {
+    cout << "You get on the boat."<<endl;
+    cout << "The sword is gone."<<endl;
+    cout<<"I suppose this is farewell!"<<endl;
+    cout<<"so, goodbye."<<endl;
+    game = 1;
+  }
+  else if (rn == 14 && goodEnd == 1)//bad end txt
+  {
+    cout << "You get on the boat-oh."<<endl;
+    cout << "The sword. The sword hasn't been returned"<<endl;
+    cout << "Oops. Uhhhhh, haha...uhhhh, yeah. Yup. Uh huh."<<endl;
+    cout << "So...um. Yeah. I can't really help you with that drowning situation you've got going on."<<endl;
+    cout << "it's okay, we can just do this all again. yup. Yes we can."<<endl;
+    cout << "so, goodbye!"<<endl;
+    game = 1;
+  }
+  //trade 1 is old_shield in r2
+  if (rn == 1 && ps > 0)
+  {
+    //cout << "1"<<endl;
+    if (((*(*(r.begin()+rn))).getI())->empty() == false)
+      {
+	//cout << "2"<<endl;
+	for (vector<item*>::iterator it =((*(*(r.begin()+rn))).getI())->begin(); it != ((*(*(r.begin()+rn))).getI())->end(); ++it)//we in r2
+	  {
+	    if(strcmp(((*(*it)).name),"old_shield")==0 && t1 == 0)//drop old shield and havent done trade yet
+	      {
+		cout << "3" << endl;
+		cout << "The hand grabs the shield, and chucks a spear onto the ground." <<endl;
+		cout << "You should pick it up" << endl;
+		item* im = new item;
+		//cout << "AAA"<<endl;
+		(*im).name = new char[15];
+		char nc[18] = "magic_spear";
+		//cout << "AAAAAAA"<<endl;
+		strcpy((*im).name, nc);
+		cout << "AAAAAAAAAAAAAAA"<<endl;
+		(*(*(r.begin()+rn))).setI(im);
+		//cout << "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"<<endl;
+		++t1;
+		return;
+	      }
+	  }
+	for (vector<item*>::iterator it =((*(*(r.begin()+rn))).getI())->begin(); it != ((*(*(r.begin()+rn))).getI())->end(); ++it)//we in r2
+          {
+            if(strcmp(((*(*it)).name),"sacred_sword")==0 && t2 == 0)//drop sword and havent done trade yet
+              {
+                cout << "The hand grabs the sword, and lets go of the shield." <<endl;
+                cout << "You should pick it up" << endl;
+              }
+          }
+
+	//trade 2
+	for (vector<item*>::iterator it =((*(*(r.begin()+rn))).getI())->begin(); it != ((*(*(r.begin()+rn))).getI())->end(); ++it)//we in r2
+	  {
+	    if(strcmp(((*(*it)).name),"sacred_sword")==0 && t2 == 0)//drop sword and havent done trade yet
+	      {
+		cout << "The hand grabs the sword, and lets go of the shield." <<endl;
+		cout << "You should pick it up" << endl;
+		++t2;
+	      }
+	  }
+	//trade 3
+	for (vector<item*>::iterator it =((*(*(r.begin()+rn))).getI())->begin(); it != ((*(*(r.begin()+rn))).getI())->end(); ++it)//we in r2
+          {
+            if(strcmp(((*(*it)).name),"old_shield")==0 && t3 == 0)//drop sword and havent done trade yet
+              {
+                cout << "The hand grabs the sword, and lets go of the shield." <<endl;
+                cout << "You should pick it up" << endl;
+		++t3;
+              }
+          }	
+      }
+  }
+}
 
 //functions
 void mkRoom(vector<Room*>& r)
@@ -188,11 +314,11 @@ void mkRoom(vector<Room*>& r)
   Room* ro11 = new Room();
   (*ro11).setD(d);//12
   d[0] = '\0';
-  strcpy(d, "[7th Branch] Ah, another statue of the spearman! And another door behing him! Hmm, you smell flowers? The sea? Okay then, not sure where that's coming from.");
+  strcpy(d, "[7th Branch] Ah, a stone! I bet a sword could fit in there! Hmm, you smell flowers? The sea? Okay then, not sure where that's coming from.");
   Room* ro12 = new Room();
   (*ro12).setD(d);//13
   d[0] = '\0';
-  strcpy(d, "[The Garden] White flowers with a soft glow blanket the land before you. Oh, a third statue.\n Are you ready?");
+  strcpy(d, "[The Garden] White flowers with a soft glow blanket the land before you. Ah, another statue of the spearman, but no with no shield.\n Are you ready?");
   Room* ro13 = new Room();
   (*ro13).setD(d);//14
   d[0] = '\0';
@@ -322,15 +448,6 @@ void mkRoom(vector<Room*>& r)
   r.push_back(ro14);
 }
 
-
-
-void updateRooms(int& r10, int& r8, int& r11, int& r14, int& r15, vector<Room*>\
-& r)
-{
-  
-  //end();
-}
-
 void descRoom(int n, vector<Room*>& r)
 {
   cout << ((*(r.begin()+n))->getD())<< endl;//description
@@ -387,6 +504,7 @@ void processE(char p, int& rn, vector<Room*>& r)
 
 void processD(char p[15], int& rn, vector<item*>& i, vector<Room*>& r)
 {
+  cout << endl;
   //cout << "HI";
   if(i.empty()==false)
   {
@@ -422,6 +540,7 @@ void processD(char p[15], int& rn, vector<item*>& i, vector<Room*>& r)
 
 void processT(char p[15], int& rn, vector<item*>& i, vector<Room*>& r)//pretty much the opposite dir of drop, so code can be similar
 {
+  cout << endl;
     //cout << "HI";
   if((*((*(r.begin()+rn))->getI())).empty()==false)
   {
@@ -442,6 +561,7 @@ void processT(char p[15], int& rn, vector<item*>& i, vector<Room*>& r)//pretty m
 		cout << (*(*it)).name<<endl;
 	      }
 	    }
+	    cout << "YOU:"<<endl;
 	    for (vector<item*>::iterator it = i.begin(); it != i.end(); ++it)
             {
 	      cout << (*(*it)).name<<endl;
@@ -477,7 +597,5 @@ void quit(vector<item*>& i, vector<Room*>& r)
   }
 }
 
-void end()
-{
 
-}
+
